@@ -65,3 +65,20 @@ View/검사 더블클릭은 왼쪽 내장 OHIF에 해당 검사 UID를 전달합
 영상 닫기를 눌러도 검색 및 검사 선택은 유지됩니다.
 변경 후 JavaScript 구문 검사와 CSS·OHIF 경로 HTTP 200을 확인했습니다.
 브라우저 자동 검증은 호스트의 libnspr4.so 누락으로 실행하지 못했습니다.
+
+### 2026-11-12 OHIF 표시 및 확대 수정
+OHIF 사전 빌드 이미지가 /app-config.js, /app.bundle.* 및 worker를 루트 경로에서
+요청하므로 프록시에서 워크리스트 파일 외 경로를 OHIF에 전달하도록 수정했습니다.
+상위 화면과 iframe에 COOP/COEP 헤더를 적용했습니다.
+뷰어 크게 보기/목록과 함께 보기 버튼으로 뷰어 폭을 전환할 수 있습니다.
+적용 시 docker compose exec -T web nginx -t 및
+docker compose exec -T web nginx -s reload 를 실행합니다.
+
+임시 라이브러리를 사용한 Chromium 실측 검증:
+- CT와 DX 선택 후 해당 UID의 iframe에서 영상 canvas 및 픽셀 표시 확인.
+- CT 로딩 중 JavaScript 오류 및 HTTP 400 이상 응답 없음.
+- crossOriginIsolated=true, 뷰어 크게 보기 전환 확인.
+- CT Zoom 도구로 영상 영역 너비 246px → 120px → 386px 변화 확인.
+Zoom(돋보기)을 선택하고 영상에서 왼쪽 버튼을 누른 채 아래로 드래그하면 확대,
+위로 드래그하면 축소됩니다.
+이 검증은 기존 README의 브라우저 미실행 기록 중 해당 항목을 대체합니다.

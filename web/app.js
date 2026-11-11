@@ -3,7 +3,7 @@ import{createRoot}from'https://esm.sh/react-dom@18.3.1/client';
 const h=React.createElement;
 function restore(){try{return JSON.parse(sessionStorage.q||'{}')}catch{return {}}}
 function App(){
- const [rows,R]=React.useState([]),[err,E]=React.useState(''),[loading,L]=React.useState(false),[q,Q]=React.useState(restore),[pid,P]=React.useState(sessionStorage.pid||''),[uid,U]=React.useState(sessionStorage.uid||''),[series,S]=React.useState([]),[edit,B]=React.useState({}),[opened,O]=React.useState(null),[over,OV]=React.useState(false),[chosen,C]=React.useState(''),[saved,SD]=React.useState(''),[saving,SV]=React.useState(false),[seriesError,SE]=React.useState('');
+ const [rows,R]=React.useState([]),[err,E]=React.useState(''),[loading,L]=React.useState(false),[q,Q]=React.useState(restore),[pid,P]=React.useState(sessionStorage.pid||''),[uid,U]=React.useState(sessionStorage.uid||''),[series,S]=React.useState([]),[edit,B]=React.useState({}),[opened,O]=React.useState(null),[expanded,EX]=React.useState(false),[over,OV]=React.useState(false),[chosen,C]=React.useState(''),[saved,SD]=React.useState(''),[saving,SV]=React.useState(false),[seriesError,SE]=React.useState('');
  async function load(){L(true);try{const r=await fetch('/api/studies');if(!r.ok)throw Error();R(await r.json());E('')}catch{E('Orthanc 연결 실패 · 연결을 확인하고 새로고침하세요.')}finally{L(false)}}
  React.useEffect(()=>{load()},[]);
  React.useEffect(()=>{sessionStorage.q=JSON.stringify(q);sessionStorage.pid=pid;sessionStorage.uid=uid},[q,pid,uid]);
@@ -16,9 +16,9 @@ function App(){
  const empty=t=>h('div',{className:'empty'},t);
  function control(k,label,options,editing=false){const obj=editing?edit:q,set=editing?B:Q;const props={value:obj[k]||'',onChange:e=>set({...obj,[k]:e.target.value})};return h('label',{key:k},label,options?h('select',props,...options.map(v=>h('option',{key:v,value:v},v||(editing?'미등록':'전체')))):h('input',{...props,type:['from','to'].includes(k)?'date':'text',placeholder:label}))}
  return h(React.Fragment,null,h('header',null,h('strong',null,'◈ PACS WORKSTATION'),h('small',null,'Orthanc / OHIF · 의료영상 조회')),
- h('main',{className:'station'},
+ h('main',{className:'station'+(expanded?' expanded':'')},
  h('section',{className:'viewer'+(over?' over':''),onDragOver:e=>{e.preventDefault();OV(true)},onDragLeave:()=>OV(false),onDrop:e=>{e.preventDefault();OV(false);if(selected&&e.dataTransfer.getData('application/x-pacs-study')===uid)view(selected)}},
- h('div',{className:'bar'},h('span',null,'영상 조회',opened?' · '+opened.description:''),h('button',{disabled:!opened,onClick:()=>O(null)},'영상 닫기')),
+ h('div',{className:'bar'},h('span',null,'영상 조회',opened?' · '+opened.description:''),h('div',{className:'viewer-actions'},h('button',{disabled:!opened,onClick:()=>EX(!expanded)},expanded?'목록과 함께 보기':'뷰어 크게 보기'),h('button',{disabled:!opened,onClick:()=>{O(null);EX(false)}},'영상 닫기'))),
  opened?h('iframe',{key:opened.uid,src:'/viewer/viewer?StudyInstanceUIDs='+encodeURIComponent(opened.uid),title:'OHIF 영상 뷰어',allowFullScreen:true}):h('div',{className:'placeholder'},h('div',null,h('b',null,'⊞ 검사를 선택해 영상을 여세요'),h('br'),'View 버튼 또는 검사 더블클릭',h('br'),'시리즈 썸네일을 여기로 끌어다 놓아도 열립니다.')),
  h('div',{className:'viewer-foot'},opened?opened.name+' · '+opened.uid:'CT / X-ray · 영상 조작은 OHIF 도구 모음을 사용하세요')),
  h('section',{className:'worklist'},h('div',{className:'bar'},'WORKLIST / 검사 목록',h('span',null,found.length+' studies')),
