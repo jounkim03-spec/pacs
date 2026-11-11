@@ -1,0 +1,1 @@
+{"RemoteAccessAllowed":true,"AuthenticationEnabled":false,"DicomAet":"ORTHANC","Plugins":["/usr/share/orthanc/plugins"],"DicomWeb":{"Enable":true,"Root":"/dicom-web/"}}

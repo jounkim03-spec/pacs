@@ -1,0 +1,21 @@
+services:
+  orthanc:
+    image: orthancteam/orthanc:25.8.2-full
+    environment:
+      DICOM_WEB_PLUGIN_ENABLED: 'true'
+    volumes: [./orthanc/config.json:/etc/orthanc/orthanc.json, dicom:/var/lib/orthanc/db]
+    ports: ['127.0.0.1:4242:4242']
+  api:
+    build: ./api
+    volumes: [db:/data]
+  ohif:
+    image: ohif/app:v3.9.2
+    volumes: [./ohif/config.js:/usr/share/nginx/html/app-config.js]
+  web:
+    image: nginx:1.27-alpine
+    ports: ['127.0.0.1:8080:80']
+    volumes: [./web:/usr/share/nginx/html, ./nginx.conf:/etc/nginx/conf.d/default.conf]
+    depends_on: [api, orthanc, ohif]
+volumes:
+  dicom:
+  db:

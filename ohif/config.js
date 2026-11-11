@@ -1,0 +1,1 @@
+window.config={routerBasename:'/viewer',showStudyList:false,extensions:[],modes:[],dataSources:[{namespace:'@ohif/extension-default.dataSourcesModule.dicomweb',sourceName:'orthanc',configuration:{name:'orthanc',qidoRoot:'/dicom-web',wadoRoot:'/dicom-web',wadoUriRoot:'/dicom-web',imageRendering:'wadors',thumbnailRendering:'wadors'}}],defaultDataSourceName:'orthanc'};
